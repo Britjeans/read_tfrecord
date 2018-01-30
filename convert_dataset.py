@@ -33,7 +33,6 @@ import tensorflow as tf
 import dataset_utils
 import numpy as np
 # The URL where the Flowers data can be downloaded.
-_DATA_URL = 'http://download.tensorflow.org/example_images/flower_photos.tgz'
 
 # The number of images in the validation set.
 _NUM_VALIDATION = 350
@@ -182,6 +181,6 @@ def run(dataset_dir):
  #  Finally, write the labels file:
   
   print('\nFinished converting the Flowers dataset!')
-data_dir='/home/yinquan/wanyingd/DistillProject/DistillData/'
+data_dir='/home/wanyingd/DistillProject/DistillData/'
 run(data_dir)
   
