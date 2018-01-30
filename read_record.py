@@ -13,17 +13,17 @@ def read_and_decode(filename_queue):
     image=features['image/encoded']
     image_decoded = tf.image.decode_jpeg(image)
 	feature = tf.cast(features['image/feature'], tf.float32)
-	return image_decoded,feature
+    return image_decoded,feature
 
 
 if __name__=='__main__':
-    tfrecords_filename = "flowers_train_0000-of-0001.tfrecord"
-
+    tfrecords_filename = "test.tfrecord"
     #image = tf.reshape(image, [224, 224, 3])
-   # image = tf.reshape(image, [7,30])
-   
+    # image = tf.reshape(image, [7,30])
+    #number of records in one tfrecord files, you may manually modify this parameter
+    num_of_record=4
     with tf.Session() as sess: 
-	    filename_queue = tf.train.string_input_producer([tfrecords_filename]) 
+	filename_queue = tf.train.string_input_producer([tfrecords_filename]) 
         image,feature=read_and_decode(filename_queue)
         image.set_shape([160,160,3])
 
@@ -35,12 +35,13 @@ if __name__=='__main__':
         #img=Image.fromarray(example, 'RGB')
         #img.save('./'+str(i)+'_''Label_'+str(l)+'.jpg')
        # print(example, l)
-	    for i in range(4):
-		    example, l = sess.run([image,feature])
-			print('image')
-			print (example)
-			print('feature')
-			print(l)
+
+	for i in range(num_of_record):
+            example, l = sess.run([image,feature])
+	    print('image')
+	    print (example)
+	    print('feature')
+	    print(l)
     
         coord.request_stop()
         coord.join(threads)
