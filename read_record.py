@@ -12,7 +12,7 @@ def read_and_decode(filename_queue):
                                        })  
     image=features['image/encoded']
     image_decoded = tf.image.decode_jpeg(image)
-	feature = tf.cast(features['image/feature'], tf.float32)
+    feature = tf.cast(features['image/feature'], tf.float32)
     return image_decoded,feature
 
 
