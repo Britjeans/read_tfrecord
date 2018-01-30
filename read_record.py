@@ -1,47 +1,32 @@
 import tensorflow as tf
 from PIL import Image
-import numpy as np
-
-def read_and_decode(filename_queue):
+if __name__=='__main__':
+    tfrecords_filename = "/home/yinquan/wanyingd/DistillProject/DistillData/tf_record/flowers_train_00000-of-00005.tfrecord"
+    filename_queue = tf.train.string_input_producer([tfrecords_filename],) 
     reader = tf.TFRecordReader()
     _, serialized_example = reader.read(filename_queue)   
     features = tf.parse_single_example(serialized_example,
                                        features={
-                                           'image/feature': tf.FixedLenFeature((128), tf.float32),
-                                           'image/encoded' : tf.FixedLenFeature([], tf.string),
+                                           'feature': tf.FixedLenFeature((128), tf.float32),
+                                           'image' : tf.FixedLenFeature([], tf.string),
                                        })  
-    image=features['image/encoded']
-    image_decoded = tf.image.decode_jpeg(image)
-    feature = tf.cast(features['image/feature'], tf.float32)
-    return image_decoded,feature
-
-
-if __name__=='__main__':
-    tfrecords_filename = "test.tfrecord"
-    #image = tf.reshape(image, [224, 224, 3])
-    # image = tf.reshape(image, [7,30])
-    #number of records in one tfrecord files, you may manually modify this parameter
-    num_of_record=4
+    image = tf.decode_raw(features['image'],tf.float32)
+    image = tf.reshape(image, [224, 224, 3])
+    #number of record in one tfrecord, you may manually modify this parameter
+    num_of_record=10
+   # image = tf.reshape(image, [7,30])
+    feature = tf.cast(features['feature'], tf.float32)
     with tf.Session() as sess: 
-	filename_queue = tf.train.string_input_producer([tfrecords_filename]) 
-        image,feature=read_and_decode(filename_queue)
-        image.set_shape([160,160,3])
-
         init_op = tf.initialize_all_variables()
         sess.run(init_op)
         coord=tf.train.Coordinator()
         threads= tf.train.start_queue_runners(coord=coord)
-       
+        for i in range(num_of_record):
+            example, l = sess.run([image,feature])
         #img=Image.fromarray(example, 'RGB')
         #img.save('./'+str(i)+'_''Label_'+str(l)+'.jpg')
-       # print(example, l)
-
-	for i in range(num_of_record):
-            example, l = sess.run([image,feature])
-	    print('image')
-	    print (example)
-	    print('feature')
-	    print(l)
-    
+        #print(example, l)
+            print(l)
+            print(example)
         coord.request_stop()
         coord.join(threads)
